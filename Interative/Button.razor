@@ -1,0 +1,75 @@
+﻿@inherits BaseInteractiveComponent
+<button @onclick="OnClickHandler"
+        class="@GetButtonClasses()"
+        type="@Type"
+        disabled="@Disabled"
+        @attributes="AdditionalAttributes">
+    @if (Loading)
+    {
+        <span class="button-loader"></span>
+    }
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @Text
+    }
+</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; } = "";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public Styling.Theme Theme { get; set; } = Styling.Theme.Primary;
+
+    [Parameter]
+    public Styling.Button.Variant Variant { get; set; } = Styling.Button.Variant.Filled;
+
+    [Parameter]
+    public Styling.Button.Type Type { get; set; } = Styling.Button.Type.Button;
+
+    [Parameter]
+    public bool Loading { get; set; } = false;
+
+    [Parameter]
+    public Styling.Size Size { get; set; } = Styling.Size.Medium;
+
+    private async Task OnClickHandler(MouseEventArgs args)
+    {
+        if (!Disabled && OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(args);
+        }
+    }
+
+    private string GetButtonClasses()
+    {
+        var classes = new List<string> { "button" };
+
+        // Apply outline style if specified
+        if (Variant != Styling.Button.Variant.Filled)
+        {
+            classes.Add($"button-{Variant.ToString().ToLower()}");
+        }
+
+        classes.Add($"button-{Theme.ToString().ToLower()}");
+        classes.Add($"button-{Size.ToString().ToLower()}");
+
+        // Apply loading state
+        if (Loading)
+        {
+            classes.Add("button-loading");
+        }
+
+        return string.Join(" ", classes);
+    }
+}

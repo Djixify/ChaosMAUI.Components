@@ -1,0 +1,16 @@
+﻿  .icon-extrasmall { font-size: 1rem; }
+  .icon-small     { font-size: 1.5rem; }
+  .icon-medium    { font-size: 2rem; }
+  .icon-large     { font-size: 2.5rem; }
+  .icon-extralarge{ font-size: 3rem; }
+
+  .icon-primary   { color: var(--primary); }
+  .icon-secondary { color: var(--secondary); }
+  .icon-tertiary  { color: var(--tertiary); }
+  .icon-danger    { color: var(--danger); }
+  .icon-success   { color: var(--success); }
+  .icon-warning   { color: var(--warning); }
+  .icon-info      { color: var(--info); }
+  .icon-light     { color: var(--light); }
+  .icon-dark      { color: var(--dark); }
+  .icon-inherit   { color: inherit; }

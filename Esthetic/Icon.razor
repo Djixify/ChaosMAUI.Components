@@ -1,0 +1,20 @@
+﻿<span class="material-symbols-outlined @GetIconClasses()" @attributes="AdditionalAttributes">@GoogleIcon.IconMaterialNames[Name]</span>
+
+@code {
+    [Parameter]
+    public Size Size { get; set; } = Size.Small;
+
+    [Parameter]
+    public Theme? Theme { get; set; } = null;
+
+    [Parameter]
+    public GoogleIcon.Icon Name { get; set; } = GoogleIcon.Icon.Abc;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+
+    private string GetIconClasses()
+    {
+        return $"icon-{Size.ToString().ToLower()}" + (Theme != null ? $"icon-{Theme.ToString()!.ToLower()}" : "icon-inherit");
+    }
+}

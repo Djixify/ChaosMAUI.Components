@@ -1,0 +1,12 @@
+﻿@inherits BaseComponent
+<div class="row highlight" @attributes=@AdditionalAttributes>
+  @ChildContent
+</div>
+
+@code {
+  [Parameter]
+  public RenderFragment? ChildContent { get; set; } = null;
+
+  [Parameter]
+  public Styling.Layout.JustifyContent Justify { get; set; } = Layout.JustifyContent.SpaceBetween;
+}

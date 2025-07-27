@@ -1,0 +1,116 @@
+﻿@using System.Linq.Expressions
+@inherits BaseInteractiveComponent
+@typeparam T
+
+<select @onchange="OnSelectedChanged" class="dropdown" disabled="@Disabled" @attributes=AdditionalAttributes>
+    @if (_subsetItems?.Any() ?? false)
+    {
+        @foreach (var item in _subsetItems)
+        {
+            bool selected = EqualityComparer<T>.Default.Equals(item, Value);
+            <option value="@item" selected="@selected">
+                @if (OptionTemplate != null)
+                {
+                    @OptionTemplate((item, selected))
+                }
+                else
+                {
+                    @(item?.ToString() ?? string.Empty)
+                }
+            </option>
+        }
+    }
+    else if (EmptyTemplate != null)
+    {
+        <option disabled>@EmptyTemplate</option>
+    }
+    else
+    {
+        <option disabled>No items found</option>
+    }
+</select>
+
+@code {
+    public record Page(int Skip, int Take, int Total);
+
+    [Parameter]
+    public IQueryable<T> Items { get; set; }
+
+    [Parameter]
+    public Expression<Func<T,object>> OrderBy { get; set; } 
+
+    [Parameter]
+    public RenderFragment<(T Item, bool Selected)>? OptionTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? EmptyTemplate { get; set; }
+
+    [Parameter]
+    public T? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<T?> ValueChanged { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    [Parameter]
+    public int BufferedSize { get; set; } = 5;
+
+    [Parameter]
+    public EventCallback<Page> PageChanged { get; set; }
+
+    private Page _currentPage = new(0,0,0);
+    private IList<T>? _subsetItems = null!;
+
+    protected async Task NextPage()
+    {
+        _currentPage = new Page(_currentPage.Skip + PageSize, _currentPage.Take + BufferedSize, _currentPage.Total);
+    }
+
+    protected async Task FetchPage(Page page)
+    {
+        if (Items == null || !Items.Any())
+        {
+            _subsetItems = null;
+            return;
+        }
+
+        _subsetItems = Items
+            .Skip(page.Skip - BufferedSize)
+            .Take(page.Take + BufferedSize)
+            .ToList();
+
+        _currentPage = page;
+
+        await PageChanged.InvokeAsync(_currentPage);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        await FetchPage(new Page(0, PageSize, Items.Count()));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentPage = new Page(0, PageSize, Items?.Count() ?? 0);
+    }
+
+    private async Task OnSelectedChanged(ChangeEventArgs e)
+    {
+        // If Items is null or empty, or value selected is null, then set Value to default and invoke ValueChanged with default value
+        if (Items == null || !Items.Any() || e.Value == default)
+        {
+            Value = default;
+            await ValueChanged.InvokeAsync(default);
+            return;
+        }
+
+        var selected_item = (T)e.Value;
+        await ValueChanged.InvokeAsync(selected_item);
+    }
+
+    private bool IsSelected(T item) => EqualityComparer<T>.Default.Equals(item, Value);
+}
