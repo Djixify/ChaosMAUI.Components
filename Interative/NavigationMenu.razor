@@ -1,0 +1,65 @@
+﻿@using static ChaosMAUI.Components.Styling.Layout
+@inherits BaseInteractiveComponent
+
+<CascadingValue Value="this" IsFixed="true">
+  <nav class="@($"menu {GetClasses()}")" @attributes=AdditionalAttributes>
+    @if (Header != null)
+    {
+      <div class="menu-header" @onclick="@(() => Collapsed = !Collapsed)">
+        <div>
+          @Header
+        </div>
+        <div style="transform: rotate(@(Collapsed ? "90deg" : "0deg"))">
+          »
+        </div>
+      </div>
+      @if (!Collapsed)
+      {
+        @ChildContent
+        <div class="horizontal-divider"></div>
+      }
+    }
+    else
+    {
+      @ChildContent
+    }
+    </nav>
+</CascadingValue>
+@code {
+    [CascadingParameter]
+    public NavigationMenu? ParentMenu { get; set; }
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public Orientation Orientation { get; set; } = Orientation.Vertical;
+    [Parameter]
+    public bool Collapsed { get; set; } = true;
+
+    private List<NavigationMenu> _subMenus { get; set; } = new List<NavigationMenu>();
+    
+
+    public void RegisterSubmenu(NavigationMenu submenu)
+    {
+        _subMenus.Add(submenu);
+    }
+
+    protected override string GetClasses()
+    {
+        return (base.GetClasses() + " " + (Orientation.ToString().ToLower())).Trim();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        if (ParentMenu != null && Header == null)
+        {
+            throw new Exception("Header must be set when NavigationMenu is a sub-menu.");
+        }
+        else if (ParentMenu == null && Header != null)
+        {
+            throw new Exception("Header should not be set when NavigationMenu is a root menu. Use direct ChildContent for the menu");
+        }
+        return base.OnInitializedAsync();
+    }
+}

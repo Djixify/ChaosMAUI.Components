@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Text;
 
-namespace ChaosMAUIComponents
+namespace ChaosMAUI.Components
 {
     public partial class Styling
     {

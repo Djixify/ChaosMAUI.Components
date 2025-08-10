@@ -1,6 +1,6 @@
 ﻿@inherits BaseInteractiveComponent
 <button @onclick="OnClickHandler"
-        class="@GetButtonClasses()"
+        class="@GetClasses()"
         type="@Type"
         disabled="@Disabled"
         @attributes="AdditionalAttributes">
@@ -29,10 +29,10 @@
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     [Parameter]
-    public Styling.Theme Theme { get; set; } = Styling.Theme.Primary;
+    public Styling.Theme? Theme { get; set; }
 
     [Parameter]
-    public Styling.Button.Variant Variant { get; set; } = Styling.Button.Variant.Filled;
+    public Styling.Button.Variant? Variant { get; set; }
 
     [Parameter]
     public Styling.Button.Type Type { get; set; } = Styling.Button.Type.Button;
@@ -41,7 +41,7 @@
     public bool Loading { get; set; } = false;
 
     [Parameter]
-    public Styling.Size Size { get; set; } = Styling.Size.Medium;
+    public Styling.Size? Size { get; set; }
 
     private async Task OnClickHandler(MouseEventArgs args)
     {
@@ -51,18 +51,22 @@
         }
     }
 
-    private string GetButtonClasses()
+    protected override string GetClasses()
     {
         var classes = new List<string> { "button" };
 
+        var variant = Variant ?? Styling.Button.Variant.Filled;
+        var theme = Theme ?? Styling.Theme.Primary;
+        var size = Size ?? Styling.Size.Small;
+
         // Apply outline style if specified
-        if (Variant != Styling.Button.Variant.Filled)
+        if (variant != Styling.Button.Variant.Filled)
         {
-            classes.Add($"button-{Variant.ToString().ToLower()}");
+            classes.Add($"button-{variant.ToString().ToLower()}");
         }
 
-        classes.Add($"button-{Theme.ToString().ToLower()}");
-        classes.Add($"button-{Size.ToString().ToLower()}");
+        classes.Add($"button-{theme.ToString().ToLower()}");
+        classes.Add($"button-{size.ToString().ToLower()}");
 
         // Apply loading state
         if (Loading)

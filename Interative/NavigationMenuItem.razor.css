@@ -1,0 +1,14 @@
+﻿.menu-item {
+  font-size: inherit;
+  padding: 5px 10px;
+  margin: 5px 10px;
+  text-decoration: none;
+  user-select: none;
+  color: inherit;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+  .menu-item:not(:disabled):hover {
+    color: inherit;
+  }

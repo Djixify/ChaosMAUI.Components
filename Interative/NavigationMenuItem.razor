@@ -1,0 +1,23 @@
+﻿<a class="menu-item animated" href="@Path">
+  @ChildContent
+</a>
+
+@code {
+  [CascadingParameter]
+  public NavigationMenu? NavigationMenu { get; set; } = null;
+
+  [Parameter]
+  public string Path { get; set; } = string.Empty;
+
+  [Parameter]
+  public RenderFragment? ChildContent { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    if (NavigationMenu == null)
+    {
+      throw new InvalidOperationException("NavigationMenu must be set in a cascading value.");
+    }
+    await base.OnInitializedAsync();
+  }
+}

@@ -1,27 +1,4 @@
-﻿:root {
-  --primary: #0078D7;
-  --primary-hover: #0063B1;
-  --secondary: #505050;
-  --secondary-hover: #404040;
-  --tertiary: #888888;
-  --tertiary-hover: #777777;
-  --danger: #d9534f;
-  --danger-hover: #c9302c;
-  --success: #5cb85c;
-  --success-hover: #4cae4c;
-  --warning: #f0ad4e;
-  --warning-hover: #ec971f;
-  --info: #5bc0de;
-  --info-hover: #31b0d5;
-  --light: #f8f9fa;
-  --light-hover: #e2e6ea;
-  --dark: #343a40;
-  --dark-hover: #23272b;
-  --white: #ffffff;
-  --black: #000000;
-}
-
-* {
+﻿* {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
@@ -32,9 +9,10 @@
   word-wrap: break-word;
   white-space: wrap;
   hyphens: auto;
+  font-size: 0.9rem;
 }
 
-highlight {
+.highlight {
   inset: -1px;
   border: red solid 1px;
 }
@@ -57,4 +35,21 @@ highlight {
   direction: ltr;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal-divider {
+  border: 1px solid var(--dark);
+  border-radius: 2px;
+  align-self: center;
+  width: 90%;
 }

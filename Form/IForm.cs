@@ -1,4 +1,4 @@
-﻿namespace ChaosMAUIComponents.Form
+﻿namespace ChaosMAUI.Components.Form
 {
     public interface IForm
     {

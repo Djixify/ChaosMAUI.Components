@@ -1,13 +1,23 @@
 ﻿@code {
-  [Inject]
-  public NavigationManager NavigationManager { get; set; } = default!;
-  [Inject]
-  public IJSRuntime JSRuntime { get; set; } = default!;
-  [Parameter(CaptureUnmatchedValues = true)]
-  public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
 
-  protected virtual string GetClasses()
-  {
-      return $"";
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+
+    protected virtual string GetClasses()
+    {
+        return $"";
+    }
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+        // Additional logic can be added here if needed
+        if (AdditionalAttributes.TryGetValue("class", out object? obj))
+        {
+            AdditionalAttributes["class"] = GetClasses() + (obj == null ? "" : " " + obj.ToString());
+        }
   }
 }

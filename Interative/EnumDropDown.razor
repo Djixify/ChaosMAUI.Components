@@ -1,0 +1,77 @@
+﻿@using System.Linq.Expressions
+@inherits BaseInteractiveComponent
+@typeparam T where T : struct, Enum
+
+<select @onchange="OnSelectedChanged" class="dropdown" disabled="@Disabled" @attributes=AdditionalAttributes>
+    @if ((AllowClear && _items.Count > 1) || _items.Count > 0)
+    { 
+        @foreach (var item in _items)
+        {
+            bool selected = EqualityComparer<T?>.Default.Equals(item, Value);
+            <option value="@item" selected="@selected">
+                @if (OptionTemplate != null)
+                {
+                    @OptionTemplate((item, selected))
+                }
+                else
+                {
+                    @(item?.ToString() ?? string.Empty)
+                }
+            </option>
+        }
+    }
+    else if (EmptyTemplate != null)
+    {
+        <option disabled>@EmptyTemplate</option>
+    }
+    else
+    {
+        <option disabled>No items found</option>
+    }
+</select>
+
+@code {
+    [Parameter]
+    public Expression<Func<T,object>>? OrderBy { get; set; }
+
+    [Parameter]
+    public Collections.OrderDirection OrderDirection { get; set; } = Collections.OrderDirection.Ascending;
+
+    [Parameter]
+    public RenderFragment<(T? Item, bool Selected)>? OptionTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? EmptyTemplate { get; set; }
+
+    [Parameter]
+    public T? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<T?> ValueChanged { get; set; }
+
+    [Parameter]
+    public bool AllowClear { get; set; } = true;
+
+    private List<T?> _items = new List<T?>();
+
+    protected override void OnInitialized()
+    {
+        _items.Clear();
+        if (AllowClear)
+            _items.Add(null);
+
+        var enum_values = Enum.GetValues<T>().AsQueryable();
+        if (OrderBy != null)
+        {
+            enum_values = OrderDirection == Collections.OrderDirection.Ascending 
+                ? enum_values.OrderBy(OrderBy) 
+                : enum_values.OrderByDescending(OrderBy);
+        }
+        _items.AddRange(enum_values.Select(t => (T?)t));
+    }
+
+    private async Task OnSelectedChanged(object e)
+    {
+        //await ValueChanged.InvokeAsync((T?)e.Value);
+    }
+}

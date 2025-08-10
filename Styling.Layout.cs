@@ -1,9 +1,15 @@
-﻿namespace ChaosMAUIComponents
+﻿namespace ChaosMAUI.Components
 {
     public partial class Styling
     {
         public class Layout
         {
+            public enum Orientation
+            {
+                Horizontal,
+                Vertical
+            }
+
             public enum AlignItems
             {
                 Normal,
